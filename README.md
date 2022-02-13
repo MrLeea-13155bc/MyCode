@@ -1,2 +1,4 @@
 # Exercise
-练手用的
+一些go的小代码
+# List
+- MongoDB一写代码
