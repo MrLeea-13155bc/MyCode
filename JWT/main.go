@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	SECRETKEY = "243223ffslsfsldfl412fdsfsdf"
-	MAXAGE    = 60 * 60 * 24 // 1天
+	SECRETKEY = "54188wozhenweida"
+	MAXAGE    = 3 // 1天
 )
 
 type CustomClaims struct {
@@ -18,9 +18,8 @@ type CustomClaims struct {
 }
 
 func main() {
-	c := CreateToken(11)
-	token := c.Encrypt()
-	fmt.Println(token)
+	token := CreateToken(11)
+	time.Sleep(time.Second * 5)
 	c, err := ParseToken(token)
 	if err != nil {
 		log.Panicln(err)
@@ -28,21 +27,19 @@ func main() {
 	fmt.Println(c)
 }
 
-func CreateToken(Userid int64) *CustomClaims {
-	return &CustomClaims{
+func CreateToken(Userid int64) string {
+	c := &CustomClaims{
 		UserId: Userid,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Duration(MAXAGE) * time.Second).Unix(),
 		},
 	}
-}
-
-func (c *CustomClaims) Encrypt() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
 	tokenString, err := token.SignedString([]byte(SECRETKEY))
 	if err != nil {
 		log.Panicln(err)
 	}
+	fmt.Println(tokenString)
 	return tokenString
 }
 
@@ -53,9 +50,14 @@ func ParseToken(tokenString string) (*CustomClaims, error) {
 		}
 		return []byte(SECRETKEY), nil
 	})
-	clamis, ok := token.Claims.(*CustomClaims)
+	claims, ok := token.Claims.(*CustomClaims)
 	if ok && token.Valid {
-		return clamis, nil
+		return claims, nil
+	}
+	t := time.Unix(claims.StandardClaims.ExpiresAt, 0)
+	timeExceed := int(time.Now().Sub(t).Seconds())
+	if timeExceed < MAXAGE {
+		CreateToken(claims.UserId)
 	}
 	return nil, err
 }
