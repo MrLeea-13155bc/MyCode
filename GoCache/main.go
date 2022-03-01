@@ -26,8 +26,7 @@ func main() {
 	fmt.Println(c.GetWithExpiration("Hello"))
 	//返回Cache中的数量 不包含过期的
 	fmt.Println(c.ItemCount())
-	//获取所有可用数据
-	fmt.Println(c.Items())
+	fmt.Println(c.Items()) //获取所有可用数据
 	//替换
 	c.Replace("Hello", "Hell", cache.DefaultExpiration)
 	fmt.Println(c.Get("Hello"))
