@@ -1,4 +1,6 @@
 # Exercise
 一些go的小代码
 # List
-- MongoDB一写代码
+-[x] MongoDB
+-[ ] ElasticSearch
+-[x] GoCache =>自制 GoCache
